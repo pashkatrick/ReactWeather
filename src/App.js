@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import Weather from './Weather'
 
 class App extends Component {
   render() {
+    const list = ["Барнаул", "Москва"];
+    const current = "Барнаул";
     return (
       <div className="App">
-        <Weather />
+        <Weather cityList={list} currentCity={current}/>
       </div>
     );
   }

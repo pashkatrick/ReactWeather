@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './styles/App.css';
-import List from './List'
 
 export default class Weather extends Component {
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      cityList: ["Барнаул", "Москва"],
-      temp: '-20',
-      type: 'Rain'
+      cityList: props.cityList,
+      currentCity: props.currentCity,
+      outputCity: props.currentCity,
+      temp: '',
+      type: ''
     }
   }
 
@@ -20,17 +20,19 @@ export default class Weather extends Component {
     date = today.getDate() + ', ' + (months[today.getMonth()]);
     this.setState({
       date: date.toString()
-    })
+    });
+    this.getWeather(this.props.currentCity);
   }
 
   onChangeCity = (e) => {
-    this.setState({currentCity: e.target.value});
+    if (!e.target.value == "") this.setState({currentCity: e.target.value});
   }
 
   addCity = (e) => {
-    e.preventDefault ()
+    e.preventDefault ();
     this.setState({
-      cityList: [...this.state.cityList, this.state.currentCity]
+      cityList: [...this.state.cityList, this.state.currentCity],
+      outputCity: this.state.currentCity
     })
     this.getWeather(this.state.currentCity);
   }
@@ -41,17 +43,21 @@ export default class Weather extends Component {
       return response.json();
     })
     .then(data => {
-      console.log(data.main.temp + "" + data.weather[0].main);
       this.setState({
         temp: Math.round(data.main.temp - 273),
         type: data.weather[0].main
       })
     })
+    .catch(error => {
+      console.log(error)
+      alert("Please, put your VPN On") 
+    })
   }
 
   handleCity = (e) => {
     this.setState({
-      currentCity: e.target.textContent
+      currentCity: e.target.textContent,
+      outputCity: e.target.textContent
     })
     this.getWeather(e.target.textContent);
   }
@@ -69,7 +75,11 @@ export default class Weather extends Component {
                </div>
                <div id="card" className="weather">
                  <div className="details">
-                   <div className="temp">{this.state.temp}<span>c</span></div>
+                   <div className="temp">{this.state.temp}
+                      <span>c</span>
+                      <br />
+                      <span>{this.state.outputCity}</span>
+                   </div>
                    <div className="right">
                      <div id="date">{this.state.date}</div>
                      <div id="summary">{this.state.type}</div>
